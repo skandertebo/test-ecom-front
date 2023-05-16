@@ -1,4 +1,3 @@
-import React from "react";
 import HomeHeader from "../components/HomeHeader";
 import { Divider } from "@mui/material";
 import CatalogueSection from "../components/CatalogueSection";

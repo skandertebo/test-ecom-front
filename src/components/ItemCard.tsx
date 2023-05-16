@@ -1,10 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useId, useMemo } from "react";
 import { Product } from "../types/product";
 import shouldDisplayDefaultImage from "../utils/shouldDisplayDefaultImage";
 import shoeImage from "../assets/images/shoe.png";
 import { StarIcon } from "@heroicons/react/24/outline";
 import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 import { useAppContext } from "../context/appContext";
+import { imageBaseUrl } from "../config";
 
 const ItemCard: React.FC<{ product: Product }> = ({ product }) => {
   const {
@@ -19,6 +20,17 @@ const ItemCard: React.FC<{ product: Product }> = ({ product }) => {
     () => favorites?.findIndex((fav) => fav.product.id === product.id) !== -1,
     [favorites, product.id]
   );
+  const imageId = useId();
+  useEffect(() => {
+    document.getElementById(imageId)?.addEventListener("error", (e) => {
+      (e.target as HTMLImageElement).src = shoeImage;
+    });
+    return () => {
+      document.getElementById(imageId)?.removeEventListener("error", (e) => {
+        (e.target as HTMLImageElement).src = shoeImage;
+      });
+    };
+  }, []);
   return (
     <div className="flex flex-col relative">
       <button
@@ -40,10 +52,11 @@ const ItemCard: React.FC<{ product: Product }> = ({ product }) => {
         src={
           shouldDisplayDefaultImage(product.images)
             ? shoeImage
-            : product.images[0]
+            : imageBaseUrl + "/" + product.images[0]
         }
+        id={imageId}
         alt=""
-        className="w-full h-40 object-cover"
+        className="w-full h-40 aspect-square object-cover"
       />
       <div className="flex flex-col justify-center">
         <h1 className="text-xl font-medium">{product.name}</h1>

@@ -12,8 +12,8 @@ const navtopRoutes = [
     name: "Home"
   },
   {
-    path: "/product",
-    name: "Products"
+    path: "/favourites",
+    name: "Favourites"
   }
 ];
 
@@ -32,10 +32,13 @@ export default function Navtop() {
             <NavRoutes currentPath={path} />
           </div>
           <div className="flex items-center">
-            <button className="flex bg-orange py-2 px-4 gap-4 rounded-md items-center">
+            <Link
+              to={"/cart"}
+              className="flex bg-orange py-2 px-4 gap-4 rounded-md items-center"
+            >
               <ShoppingCartIcon className="h-4 w-4 text-white" />
               <Typography className="text-white text-sm">Cart</Typography>
-            </button>
+            </Link>
           </div>
         </>
       ) : (

@@ -11,10 +11,12 @@ import React from "react";
 import { Notification as NotificationType } from "../types";
 import { Alert } from "@material-tailwind/react";
 import { Backdrop, CircularProgress } from "@mui/material";
+import axios from "axios";
 export interface IAppContext {
   cart: ICartItem[];
   addToCart: (item: ICartItem) => void;
   removeFromCart: (id: number) => void;
+  editQuantity: (id: number, number: number) => void;
   clearCart: () => void;
   favorites: IFavorite[];
   addToFavorites: (item: IFavorite) => void;
@@ -41,8 +43,18 @@ export const useAppContext = () => useContext(AppContext);
 export const AppContextProvider: React.FC<React.PropsWithChildren> = ({
   children
 }) => {
-  const [cart, setCart] = useState<ICartItem[]>([]);
-  const [favorites, setFavorites] = useState<IFavorite[]>([]);
+  const [cart, setCart] = useState<ICartItem[]>(
+    localStorage.getItem("cart")
+      ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        JSON.parse(localStorage.getItem("cart")!)
+      : []
+  );
+  const [favorites, setFavorites] = useState<IFavorite[]>(
+    localStorage.getItem("favorites")
+      ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        JSON.parse(localStorage.getItem("favorites")!)
+      : []
+  );
   const [notification, setNotification] = useState<NotificationType | null>(
     null
   );
@@ -57,14 +69,44 @@ export const AppContextProvider: React.FC<React.PropsWithChildren> = ({
     [setNotification]
   );
   useEffect(() => {
-    const cart = localStorage.getItem("cart");
-    if (cart) {
-      setCart(JSON.parse(cart));
+    function getCartFromLocalStorage(
+      callback?: (cart: ICartItem[] | undefined) => void
+    ) {
+      const cart = localStorage.getItem("cart");
+      if (cart) {
+        const cartAsJson = JSON.parse(cart) as ICartItem[];
+        const productIds = cartAsJson.map((item) => item.product.id);
+        const idsString = productIds.join(",");
+        if (productIds.length === 0) {
+          return;
+        }
+        axios
+          .get("api/product/getInMass", {
+            params: {
+              ids: idsString
+            }
+          })
+          .then(() => {
+            callback && callback(cartAsJson);
+          })
+          .catch((err) => {
+            if (err.response.status === 404) {
+              localStorage.removeItem("cart");
+              setCart([]);
+            }
+          });
+      }
+      const favorites = localStorage.getItem("favorites");
+      if (favorites) {
+        setFavorites(JSON.parse(favorites));
+      }
     }
-    const favorites = localStorage.getItem("favorites");
-    if (favorites) {
-      setFavorites(JSON.parse(favorites));
-    }
+    getCartFromLocalStorage();
+    window.addEventListener("storage", () => getCartFromLocalStorage());
+
+    return () => {
+      window.removeEventListener("storage", () => getCartFromLocalStorage());
+    };
   }, []);
 
   useEffect(() => {
@@ -91,6 +133,15 @@ export const AppContextProvider: React.FC<React.PropsWithChildren> = ({
   const removeFromCart = (id: number) => {
     const newCart = cart.filter((item) => item.product.id !== id);
     setCart(newCart);
+  };
+
+  const editQuantity = (id: number, quantity: number) => {
+    const index = cart.findIndex((item) => item.product.id === id);
+    if (index !== -1) {
+      const newCart = [...cart];
+      newCart[index].quantity = quantity;
+      setCart(newCart);
+    }
   };
 
   const clearCart = () => {
@@ -128,6 +179,7 @@ export const AppContextProvider: React.FC<React.PropsWithChildren> = ({
         cart,
         addToCart,
         removeFromCart,
+        editQuantity,
         clearCart,
         favorites,
         addToFavorites,
