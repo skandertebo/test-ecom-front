@@ -6,14 +6,13 @@ import sliderbackground1 from "../assets/images/home-slider1.avif";
 import sliderbackground2 from "../assets/images/home-slider2.avif";
 import sliderbackground3 from "../assets/images/home-slider3.avif";
 import sliderbackground4 from "../assets/images/home-slider4.avif";
-
 import "swiper/css";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import { Typography } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { useCallback } from "react";
 
 const slides = [
   {
@@ -43,8 +42,15 @@ const slides = [
 ];
 
 export default function HomeHeader(): JSX.Element {
+  const scrollDownToCatalog = useCallback(() => {
+    const catalog = document.getElementById("catalogueSection");
+    if (catalog) {
+      catalog.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
+
   return (
-    <div className="px-2 flex flex-col gap-12 items-center justify-center h-full flex-1 lg:px-0 py-8 bg-primary">
+    <div className="px-2 flex flex-col gap-12 items-center justify-center lg:px-0 py-8 bg-primary h-[91vh]">
       <div className="h-full w-full">
         <Swiper
           modules={[Pagination, Scrollbar, A11y, Autoplay]}
@@ -85,13 +91,14 @@ export default function HomeHeader(): JSX.Element {
           ))}
         </Swiper>
       </div>
-      <Link to="#catalogueSection">
-        <div className="border border-blue-gray-50 rounded-md px-6 py-2 hover:bg-orange hover:border-orange transition-all">
-          <Typography variant="h3" className="text-white font-normal">
-            Discover
-          </Typography>
-        </div>
-      </Link>
+      <button
+        onClick={scrollDownToCatalog}
+        className="border border-blue-gray-50 rounded-md px-6 py-2 hover:bg-orange hover:border-orange transition-all"
+      >
+        <Typography variant="h3" className="text-white font-normal">
+          Discover
+        </Typography>
+      </button>
     </div>
   );
 }
