@@ -1,51 +1,20 @@
 import { Select, Option } from "@material-tailwind/react";
-import axios from "axios";
 import ItemCard from "./ItemCard";
-import { useEffect, useRef, useState } from "react";
-import { Product } from "../types/product";
 import { Skeleton } from "@mui/material";
-import { ProductType } from "../types/ProductType";
+import useProducts from "../hooks/useProducts";
 export default function CatalogueSection(): JSX.Element {
-  const [products, setProducts] = useState<Product[] | undefined>(undefined);
-  const [page, setPage] = useState<number>(1);
-  const limitRef = useRef<number>(10);
-  const limit = limitRef.current;
-  const [hasReachedEnd, setHasReachedEnd] = useState<boolean>(false);
-  const [categories, setCategories] = useState<ProductType[] | undefined>(
-    undefined
-  );
-  const [selectedCategory, setSelectedCategory] = useState<string>("-1");
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const params: {
-        page: number;
-        limit: number;
-        type?: string;
-      } = {
-        page,
-        limit
-      };
-      if (selectedCategory !== "-1") params["type"] = selectedCategory;
-      const res = await axios.get("/api/product", {
-        params
-      });
-      if (res.data.length < limit) setHasReachedEnd(true);
-      setProducts((prev) => {
-        if (!prev) return res.data;
-        for (let i = 0; i < res.data.length; i++) {
-          if (prev.find((product) => product.id === res.data[i].id)) continue;
-          prev.push(res.data[i]);
-        }
-        return [...prev];
-      });
-    };
-    const fetchCategories = async () => {
-      const res = await axios.get("/api/type");
-      setCategories(res.data);
-    };
-    fetchCategories();
-    fetchProducts();
-  }, [page, limit, selectedCategory]);
+  const {
+    categories,
+    products,
+    selectedCategory,
+    setSelectedCategory,
+    page,
+    setPage,
+    hasReachedEnd,
+    isRefetching,
+    setHasReachedEnd,
+    setProducts
+  } = useProducts();
 
   return (
     <div
@@ -116,13 +85,19 @@ export default function CatalogueSection(): JSX.Element {
         </div>
       )}
       <div className="flex flex-col gap-2">
-        {!hasReachedEnd && (
-          <button
-            onClick={() => setPage(page + 1)}
-            className="border-none text-sm text-cyan-800"
-          >
-            Load More
-          </button>
+        {isRefetching ? (
+          <div className="flex flex-col items-center gap-2">
+            <Skeleton variant="text" width={100} />
+          </div>
+        ) : (
+          !hasReachedEnd && (
+            <button
+              onClick={() => setPage(page + 1)}
+              className="border-none text-sm text-cyan-800"
+            >
+              Load More
+            </button>
+          )
         )}
       </div>
     </div>

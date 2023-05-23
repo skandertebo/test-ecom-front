@@ -9,7 +9,7 @@ export default function Favourites(): JSX.Element {
       <div className="flex flex-col w-full">
         <h1 className="text-4xl font-bold">Favourites</h1>
         <h1 className="text-2xl font-medium">
-          Check out your favourite products{" "}
+          Check out your favourite products
         </h1>
       </div>
       <div className="flex flex-wrap justify-center xs:justify-start w-full gap-x-16 gap-y-8 max-h-3/4">

@@ -6,6 +6,7 @@ import { StarIcon } from "@heroicons/react/24/outline";
 import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 import { useAppContext } from "../context/appContext";
 import { imageBaseUrl } from "../config";
+import { Link } from "react-router-dom";
 
 const ItemCard: React.FC<{ product: Product }> = ({ product }) => {
   const {
@@ -43,23 +44,29 @@ const ItemCard: React.FC<{ product: Product }> = ({ product }) => {
         }}
       >
         {isProductInFavorites ? (
-          <StarIconSolid className="absolute top-1 left-1 w-6 h-6 text-orange" />
+          <StarIconSolid className="absolute top-1 left-1 w-6 h-6 text-orange z-40" />
         ) : (
-          <StarIcon className="absolute top-1 left-1 w-6 h-6 text-yellow" />
+          <StarIcon className="absolute top-1 left-1 w-6 h-6 text-yellow z-40" />
         )}{" "}
       </button>
-      <img
-        src={
-          shouldDisplayDefaultImage(product.images)
-            ? shoeImage
-            : imageBaseUrl + "/" + product.images[0]
-        }
-        id={imageId}
-        alt=""
-        className="w-full h-40 aspect-square object-cover"
-      />
+      <Link to={`/products/${product.id}`}>
+        <img
+          src={
+            shouldDisplayDefaultImage(product.images)
+              ? shoeImage
+              : imageBaseUrl + "/" + product.images[0]
+          }
+          id={imageId}
+          alt=""
+          className="w-full h-40 aspect-square object-cover hover:scale-[1.05] hover:shadow-md transition-all"
+        />
+      </Link>
       <div className="flex flex-col justify-center">
-        <h1 className="text-xl font-medium">{product.name}</h1>
+        <Link to={`/products/${product.id}`}>
+          <h1 className="text-xl font-medium hover:text-cyan-800 transition-colors">
+            {product.name}
+          </h1>
+        </Link>
         {product.sale && (
           <h1 className="text-sm font-semibold text-red-500">
             {product.sale.rate * 100}% OFF
@@ -71,7 +78,11 @@ const ItemCard: React.FC<{ product: Product }> = ({ product }) => {
               ${product.basePrice}
             </h1>
             <h1 className="text-lg font-semibold text-red-500">
-              ${product.basePrice - product.basePrice * product.sale.rate}
+              $
+              {(
+                product.basePrice -
+                product.basePrice * product.sale.rate
+              ).toFixed(2)}
             </h1>
           </div>
         ) : (

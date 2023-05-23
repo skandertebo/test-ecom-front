@@ -3,7 +3,8 @@ import { Product } from "./product";
 export type ProductSale = {
   id: number;
   rate: number;
-  expireAt: number | null; // timestamp
+  expireDate: number | string | null; // timestamp
   products?: Product[];
   expired: boolean;
+  name: string;
 };
