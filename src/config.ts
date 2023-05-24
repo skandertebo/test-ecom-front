@@ -1,1 +1,2 @@
-export const imageBaseUrl = "/api/public/image";
+export const apiBaseUrl = "https://testing-ecom.azurewebsites.net/api/";
+export const imageBaseUrl = apiBaseUrl + "public/image";

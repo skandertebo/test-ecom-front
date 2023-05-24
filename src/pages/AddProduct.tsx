@@ -5,6 +5,7 @@ import axios from "axios";
 import { FormEventHandler, useEffect, useReducer, useState } from "react";
 import { ProductType } from "../types/ProductType";
 import { useAppContext } from "../context/appContext";
+import { apiBaseUrl } from "../config";
 
 const initialState = {
   name: "",
@@ -84,7 +85,7 @@ export default function AddProduct() {
 
   useEffect(() => {
     async function getCategories() {
-      const res = await axios.get("/api/type");
+      const res = await axios.get(apiBaseUrl + "type");
       setCategories(res.data);
     }
     getCategories();
@@ -104,7 +105,7 @@ export default function AddProduct() {
         <form
           id="add-product-form"
           className="flex flex-col gap-6"
-          action="/api/product"
+          action={apiBaseUrl + "product"}
           method="post"
           onSubmit={handleSubmit}
         >

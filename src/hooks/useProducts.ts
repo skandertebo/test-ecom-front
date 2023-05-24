@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { ProductType } from "../types/ProductType";
 import { Product } from "../types/product";
 import { useAppContext } from "../context/appContext";
+import { apiBaseUrl } from "../config";
 export default function useProducts() {
   const [products, setProducts] = useState<Product[] | undefined>(undefined);
   const [page, setPage] = useState<number>(1);
@@ -28,7 +29,7 @@ export default function useProducts() {
       };
       if (selectedCategory !== "-1") params["type"] = selectedCategory;
       try {
-        const res = await axios.get("/api/product", {
+        const res = await axios.get(apiBaseUrl + "product", {
           params
         });
         if (res.data.length < limit) setHasReachedEnd(true);
@@ -50,7 +51,7 @@ export default function useProducts() {
       }
     };
     const fetchCategories = async () => {
-      const res = await axios.get("/api/type");
+      const res = await axios.get(apiBaseUrl + "type");
       setCategories(res.data);
     };
     fetchCategories();

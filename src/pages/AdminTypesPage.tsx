@@ -6,13 +6,14 @@ import React from "react";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid";
 import axios, { AxiosError } from "axios";
 import { useAppContext } from "../context/appContext";
+import { apiBaseUrl } from "../config";
 
 export default function AdminTypesPage() {
   const { makeNotification, enableWaiting, disableWaiting } = useAppContext();
   const [types, setTypes] = useState<ProductType[] | undefined>(undefined);
   useEffect(() => {
     (async () => {
-      const response = await axios.get("/api/type");
+      const response = await axios.get(apiBaseUrl + "type");
       setTypes(response.data);
     })();
   }, []);
@@ -61,7 +62,7 @@ export default function AdminTypesPage() {
       if (newType.trim() === "") {
         return;
       }
-      const response = await axios.post("/api/type", {
+      const response = await axios.post(apiBaseUrl + "type", {
         name: newType
       });
       setTypes((prev) => prev && [...prev, response.data]);

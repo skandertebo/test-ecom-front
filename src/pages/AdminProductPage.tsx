@@ -2,7 +2,7 @@ import { Button, Typography } from "@material-tailwind/react";
 import useProducts from "../hooks/useProducts";
 import { CircularProgress, Skeleton } from "@mui/material";
 import shouldDisplayDefaultImage from "../utils/shouldDisplayDefaultImage";
-import { imageBaseUrl } from "../config";
+import { apiBaseUrl, imageBaseUrl } from "../config";
 import { useEffect, useState } from "react";
 import { Product } from "../types/product";
 import { TrashIcon } from "@heroicons/react/20/solid";
@@ -26,7 +26,7 @@ export default function AdminProductPage() {
 
   useEffect(() => {
     (async () => {
-      const response = await axios.get("/api/sale");
+      const response = await axios.get(apiBaseUrl + "sale");
       setSales(response.data);
     })();
   }, []);

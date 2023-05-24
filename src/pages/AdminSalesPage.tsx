@@ -7,6 +7,7 @@ import { Button, Typography } from "@material-tailwind/react";
 import { TrashIcon } from "@heroicons/react/20/solid";
 import axios from "axios";
 import { useAppContext } from "../context/appContext";
+import { apiBaseUrl } from "../config";
 
 type FormSaleData = Partial<{
   [key in keyof ProductSale]: string;
@@ -45,7 +46,7 @@ export default function AdminSalesPage() {
   const [sales, setSales] = useState<ProductSale[] | undefined>(undefined);
   useEffect(() => {
     (async () => {
-      const response = await axios.get("/api/sale");
+      const response = await axios.get(apiBaseUrl + "sale");
       setSales(response.data);
     })();
   }, []);
@@ -87,7 +88,7 @@ export default function AdminSalesPage() {
       if (newSale.name!.trim() === "") {
         return;
       }
-      const response = await axios.post("/api/sale", {
+      const response = await axios.post(apiBaseUrl + "sale", {
         name: newSale.name,
         rate: newSale.rate,
         expireDate: newSale.expireDate,
