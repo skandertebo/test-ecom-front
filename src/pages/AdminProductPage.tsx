@@ -200,7 +200,7 @@ function ProductItem({
 
   return (
     <div
-      className="flex flex-col gap-2 relative shadow-lg w-fit p-4 border border-primary rounded-md bg-secondary"
+      className="flex flex-col gap-2 relative shadow-lg p-4 border border-primary rounded-md bg-secondary"
       key={product.id}
     >
       <div className="absolute top-2 right-2">
@@ -216,12 +216,18 @@ function ProductItem({
             : imageBaseUrl + "/" + product.images[0]
         }
         alt={product.name}
-        className="w-40 h-40 object-contain"
+        className="w-48 h-48 object-contain"
       />
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 w-min">
         <Typography variant="h6">{product.name}</Typography>
-        {product.description && <Typography>{product.description}</Typography>}
-        <Typography>{product.basePrice}</Typography>
+        {product.description && (
+          <Typography className="break-words">
+            {product.description.length > 20
+              ? product.description.slice(0, 40) + "..."
+              : product.description}
+          </Typography>
+        )}
+        <Typography className="font-bold">{product.basePrice}$</Typography>
         <Typography>{product.type.name}</Typography>
         <div className="flex flex-wrap gap-2 items-center">
           <Typography>Sale:</Typography>
