@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
-import { ProductType } from "../types/ProductType";
+import { ProductType } from "../types/productType";
 import { Product } from "../types/product";
 import { useAppContext } from "../context/appContext";
 import { apiBaseUrl } from "../config";

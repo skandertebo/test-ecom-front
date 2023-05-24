@@ -3,7 +3,7 @@ import { Typography } from "@material-tailwind/react";
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { FormEventHandler, useEffect, useReducer, useState } from "react";
-import { ProductType } from "../types/ProductType";
+import { ProductType } from "../types/productType";
 import { useAppContext } from "../context/appContext";
 import { apiBaseUrl } from "../config";
 

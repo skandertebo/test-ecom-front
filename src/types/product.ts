@@ -1,5 +1,5 @@
-import { ProductType } from "./ProductType";
 import { ProductSale } from "./productSale";
+import { ProductType } from "./productType";
 
 export type Product = {
   id: number;

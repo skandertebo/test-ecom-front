@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { ProductType } from "../types/ProductType";
+import { ProductType } from "../types/productType";
 import { CircularProgress } from "@mui/material";
 import { Button, Typography } from "@material-tailwind/react";
 import React from "react";
